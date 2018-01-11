@@ -1,0 +1,33 @@
+---
+"Test detect-sentiment processor":
+  - do:
+      ingest.put_pipeline:
+        id: "my_pipeline"
+        body:  >
+          {
+            "description": "_description",
+            "processors": [
+              {
+                "detect-sentiment" : {
+                  "field" : "sourceField"
+                }
+              }
+            ]
+          }
+  - match: { acknowledged: true }
+
+  - do:
+      index:
+        index: integtest
+        type: integtest
+        id: 1
+        pipeline: "my_pipeline"
+        body: {sourceField: "It is raining today in Seattle."}
+
+  - do:
+      get:
+        index: integtest
+        type: integtest
+        id: 1
+  - match: { _source.sourceField: "It is raining today in Seattle." }
+  - match: { _source.sourceField_sentiment: "NEUTRAL" }

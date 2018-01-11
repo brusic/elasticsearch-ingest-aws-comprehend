@@ -1,0 +1,12 @@
+"ingest plugin installed with no processors":
+    - do:
+        cluster.state: {}
+
+    - set: {master_node: master}
+
+    - do:
+        nodes.info: {}
+
+    - length:  { nodes.$master.plugins: 1 }
+    - match:  { nodes.$master.plugins.0.name: ingest-aws-comprehend }
+    - length:  { nodes.$master.ingest.processors: 0 }

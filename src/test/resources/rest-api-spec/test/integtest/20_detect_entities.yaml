@@ -1,0 +1,45 @@
+---
+"Test detect-entities processor":
+  - do:
+      ingest.put_pipeline:
+        id: "my_pipeline"
+        body:  >
+          {
+            "description": "_description",
+            "processors": [
+              {
+                "detect-entities" : {
+                  "field" : "sourceField"
+                }
+              },
+              {
+                "detect-entities" : {
+                  "field" : "otherSourceField",
+                  "ignore_missing": true
+                }
+              }
+            ]
+          }
+  - match: { acknowledged: true }
+
+  - do:
+      index:
+        index: integtest
+        type: integtest
+        id: 1
+        pipeline: "my_pipeline"
+        body: {sourceField: "It is raining today in Seattle."}
+
+  - do:
+      get:
+        index: integtest
+        type: integtest
+        id: 1
+  - match: { _source.sourceField: "It is raining today in Seattle." }
+  - length: { _source.sourceField_entities: 2 }
+  - match:  { _source.sourceField_entities.0.text: "today" }
+  - match:  { _source.sourceField_entities.0.type: "DATE" }
+  - match:  { _source.sourceField_entities.1.text: "Seattle" }
+  - match:  { _source.sourceField_entities.1.type: "LOCATION" }
+  - is_false: _source.otherSourceField
+  - is_false: _source.otherSourceField_entities

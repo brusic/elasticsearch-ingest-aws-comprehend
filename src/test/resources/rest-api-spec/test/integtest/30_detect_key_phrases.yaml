@@ -1,0 +1,34 @@
+---
+"Test detect-key-phrases processor":
+  - do:
+      ingest.put_pipeline:
+        id: "my_pipeline"
+        body:  >
+          {
+            "description": "_description",
+            "processors": [
+              {
+                "detect-key-phrases" : {
+                  "field" : "sourceField"
+                }
+              }
+            ]
+          }
+  - match: { acknowledged: true }
+
+  - do:
+      index:
+        index: integtest
+        type: integtest
+        id: 1
+        pipeline: "my_pipeline"
+        body: {sourceField: "It is raining today in Seattle."}
+
+  - do:
+      get:
+        index: integtest
+        type: integtest
+        id: 1
+  - match: { _source.sourceField: "It is raining today in Seattle." }
+  - length: { _source.sourceField_keyphrases: 2  }
+  - match:  { _source.sourceField_keyphrases: ["today", "Seattle"] }
