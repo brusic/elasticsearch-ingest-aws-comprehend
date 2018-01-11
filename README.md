@@ -1,8 +1,8 @@
 # Elasticsearch Amazon Comprehend NLP Ingest Processor
 
-[Elasticsearch ingest processors](https://www.elastic.co/guide/en/elasticsearch/reference/master/ingest-processors.html) using [Amazon Comprehend](https://aws.amazon.com/comprehend/) for various NLP analysis. All features are supported with separate processors. Topic Modeling is not supported. It would be an interesting project to hook up Elasticsearch as a data source for AWS Comprehend topic modeling.
+[Elasticsearch ingest processors](https://www.elastic.co/guide/en/elasticsearch/reference/master/ingest-processors.html) using [Amazon Comprehend](https://aws.amazon.com/comprehend/) for various NLP analysis. All Comprehend detection features are supported via separate processors. Topic Modeling is not supported, although it would be an interesting project to hook up Elasticsearch as a data source for AWS Comprehend topic modeling.
 
-Each field that is sent through the ingest process will result in an AWS Comprehend API call, so this system is not meant for system with large workloads. There is no support for batch processing. For better performance, your Elasticsearch ingest nodes should not only be hosted in AWS, but should also be in the region used in the AWS Comprehend API (configurable). 
+Each field that is sent through the ingest process will result in an AWS Comprehend API call, so this system is not meant for clusters with large workloads. There is no support for batch processing. For better performance, your Elasticsearch ingest nodes should not only be hosted in AWS, but should also be in the region used in the AWS Comprehend API (configurable). 
 
 ## [AWS Comprehend Pricing](https://aws.amazon.com/comprehend/pricing/)
 $0.0001 PER UNIT
